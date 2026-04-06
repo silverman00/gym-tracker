@@ -1,0 +1,64 @@
+server:
+  port: 8080
+
+spring:
+  application:
+    name: api-gateway
+
+  cloud:
+    gateway:
+      globalcors:
+        corsConfigurations:
+          '[/**]':
+            allowedOrigins: "*"
+            allowedMethods:
+              - GET
+              - POST
+              - PUT
+              - DELETE
+              - OPTIONS
+            allowedHeaders: "*"
+            exposedHeaders:
+              - Authorization
+      routes:
+        # ── User Service ──────────────────────────────────────────────────────
+        - id: user-service-auth
+          uri: http://localhost:8081
+          predicates:
+            - Path=/api/auth/**
+
+        - id: user-service-protected
+          uri: http://localhost:8081
+          predicates:
+            - Path=/api/users/**
+          filters:
+            - name: JwtAuthentication
+
+        # ── Workout Service ───────────────────────────────────────────────────
+        - id: workout-service
+          uri: http://localhost:8086
+          predicates:
+            - Path=/api/workouts/**
+          filters:
+            - name: JwtAuthentication
+
+        # ── Points Service ────────────────────────────────────────────────────
+        - id: points-service-leaderboard
+          uri: http://localhost:8085
+          predicates:
+            - Path=/api/points/leaderboard
+
+        - id: points-service
+          uri: http://localhost:8085
+          predicates:
+            - Path=/api/points/**
+          filters:
+            - name: JwtAuthentication
+
+jwt:
+  secret: 5a7134743777217a25432a462d4a614e645267556b58703272357538782f413f
+
+logging:
+  level:
+    com.gymtracker: DEBUG
+    org.springframework.cloud.gateway: INFO

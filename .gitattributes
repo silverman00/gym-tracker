@@ -1,2 +1,15 @@
 /mvnw text eol=lf
 *.cmd text eol=crlf
+
+# Vendor Flutter platform files
+mobile/android/** linguist-vendored
+mobile/ios/** linguist-vendored
+mobile/build/** linguist-vendored
+*.c linguist-vendored
+*.cpp linguist-vendored
+*.cmake linguist-vendored
+*.swift linguist-vendored
+
+# Mark Java as main language
+backend/**/*.java linguist-detectable=true
+backend/**/*.java linguist-language=Java
